@@ -4,12 +4,12 @@
     <style>
         table { border-collapse: collapse; }
         tr:first-child { text-align: center; }
-        td { border: 1px solid; padding: 1pt 4pt; }
+        td { padding: 1pt 4pt; }
         .mstate { display: inline-block; width: 1em; height: 1em; text-align: center; }
         .mstate.on  { color: green; }
         .mstate.off { color: red; }
-        .no-set > td:first-child { border-right: none; }
-        .no-set > td:nth-child(2) { border-left: none; }
+        tr:nth-child(odd) { background-color: #F0F0F0; }
+        tr:nth-child(even) { background-color: #E0E0E0; }
     </style>
 </head><body>
     <table><tr>
@@ -36,7 +36,7 @@
         <td>125 dB</td>
         <td>125 dB</td>
         <td><input type="button" value="on"/><span class="mstate">?</span></td>
-    </tr><tr class="no-set">
+    </tr><tr>
         <td>Name</td>
         <td colspan="2"></td>
         <td>125 dB</td>
