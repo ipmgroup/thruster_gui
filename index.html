@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html></head>
+    <style>
+        table { border-collapse: collapse; }
+        td { border: 1px solid; padding: 1pt 4pt; }
+        .mstate { display: inline-block; width: 1em; height: 1em; text-align: center; }
+        .mstate.on  { color: green; }
+        .mstate.off { color: red; }
+    </style>
+</head><body>
+    <table><tr>
+        <td>Name</td>
+        <td>Set</td>
+        <td>Target</td>
+        <td>Actual</td>
+        <td>Mon</td>
+    </tr><tr>
+        <td>Name</td>
+        <td><input type="button" value="Apply"/> <input type="text" value="" placeholder="Name"></td>
+        <td>125 dB</td>
+        <td>125 dB</td>
+        <td><input type="button" value="on"/><span class="mstate on">&#x2713</span></td>
+    </tr><tr>
+        <td>Name</td>
+        <td><input type="button" value="Apply"/> <input type="text" value="" placeholder="Name"></td>
+        <td>125 dB</td>
+        <td>125 dB</td>
+        <td><input type="button" value="on"/><span class="mstate off">&#x2717</span></td>
+    </tr><tr>
+        <td>Name</td>
+        <td><input type="button" value="Apply"/> <input type="text" value="" placeholder="Name"></td>
+        <td>125 dB</td>
+        <td>125 dB</td>
+        <td><input type="button" value="on"/><span class="mstate">?</span></td>
+    </tr></table>
+</body></html>
