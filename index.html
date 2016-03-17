@@ -12,8 +12,9 @@
         tr:nth-child(even) { background-color: #E0E0E0; }
         .hidden { display: none; }
     </style>
+    <script src="main.js"></script>
 </head><body>
-    <ul>
+    <ul class="hidden">
         <li num="1"><a href="#">1</a></li>
         <li num="2"><a href="#">2</a></li>
         <li num="3"><a href="#">3</a></li>
@@ -37,7 +38,7 @@
         })();
     </script>
 
-    <div class="hidden" id="controls">
+    <div id="controls">
     <fieldset class="params">
         <legend>Control Word</legend>
         <label><input type="checkbox" name="ctrl-a"/>Ololo</label>
