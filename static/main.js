@@ -28,6 +28,10 @@
             comm.send("test", { ololo: 2 }, function(err, data) {
                 console.log("RESP", err, data);
             });
+
+            comm.send("ls", {}, function(data) {
+                console.log("ls finished:", data);
+            })
         }, 1000);
 
         table.setMonState("voltage", "on");

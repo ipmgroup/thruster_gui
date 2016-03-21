@@ -32,10 +32,15 @@ wss.on("connection", function(ws) {
         if (handlers[type])
             handlers[type](msg.data, function(data) {
                 ws.send(JSON.stringify({ type: type, data: data, id: msg.id }));
-            });
+            }, notify);
         else
             console.log("UNKNOWN_REQ", type);
     });
 });
+
+function notify(type, data) {
+    var pdata = { type: type, data: data }, packed = JSON.stringify(pdata);
+    sockets.forEach(function(ws) { ws.send(packed); });
+}
 
 web.listen(10000);
