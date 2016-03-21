@@ -10,14 +10,23 @@ module.exports = {
         }, 1000);
     },
     "ls": function(data, resp, notify) {
-        var ls = spawn("ls", [ "-l", "/usr/share" ]);
+        var ls = spawn("ls", [ "-l", "/usr/share" ]), prefix = "";
 
         ls.on("close", function(code) {
+            if (prefix !== "")
+                notify("ls", prefix); // send stored rests
+
             resp(code);
         });
 
         ls.stdout.on("data", function(data) {
-            notify("ls", data.toString("utf8")); // can be called multiple times
+            var lines = data.toString("utf-8").split(/\r\n?|\n/);
+            lines[0] = [ prefix, lines[0] ].join("");
+            prefix = lines.pop();
+
+            lines.forEach(function(line) {
+                notify("ls", line); // can be called multiple times
+            });
         });
     }
 };
