@@ -18,8 +18,10 @@ wss.on("connection", function(ws) {
     var req = ws.upgradeReq, resp = { writeHead: {} };
     req.originalUrl = req.url;
 
+    ws._eOpened = true;
     function removeWS() {
         ws.removeAllListeners();
+        ws._eOpened = false;
         sockets.splice(sockets.indexOf(ws), 1);
     }
 
@@ -40,7 +42,10 @@ wss.on("connection", function(ws) {
 
 function notify(type, data) {
     var pdata = { type: type, data: data }, packed = JSON.stringify(pdata);
-    sockets.forEach(function(ws) { ws.send(packed); });
+    sockets.forEach(function(ws) {
+        if (ws._eOpened)
+            ws.send(packed);
+    });
 }
 
 web.listen(10000);
