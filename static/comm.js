@@ -4,7 +4,7 @@
     window.MotorControl = window.MotorControl || {};
     window.MotorControl.Comm = Comm;
 
-    function Comm(notify) {
+    function Comm(opened, notify) {
         var self = this;
 
         self._notify = notify;
@@ -15,6 +15,7 @@
 
         ws.onopen = function() {
             self._opened = true;
+            opened();
         };
 
         ws.onclose = ws.onerror = function() {

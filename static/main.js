@@ -12,15 +12,12 @@
     };
 
     window.addEventListener("load", function() {
+        var comm = new MotorControl.Comm(connected, notify);
         var table = new MotorControl.ControlTable(descr, function(param) {
             console.log(param);
         });
 
-        var comm = new MotorControl.Comm(function(type, data) {
-            console.log("NOTIFY", type, data);
-        });
-
-        setTimeout(function() {
+        function connected() {
             comm.send("test", { ololo: 1 }, function(err, data) {
                 console.log("RESP", err, data);
             });
@@ -32,7 +29,11 @@
             comm.send("ls", {}, function(data) {
                 console.log("ls finished:", data);
             })
-        }, 1000);
+        }
+
+        function notify(type, data) {
+            console.log("NOTIFY", type, data);
+        }
 
         table.setMonState("voltage", "on");
         table.setMonState("humidity", "off");
