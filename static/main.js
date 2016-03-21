@@ -16,6 +16,20 @@
             console.log(param);
         });
 
+        var comm = new MotorControl.Comm(function(type, data) {
+            console.log("NOTIFY", type, data);
+        });
+
+        setTimeout(function() {
+            comm.send("test", { ololo: 1 }, function(err, data) {
+                console.log("RESP", err, data);
+            });
+
+            comm.send("test", { ololo: 2 }, function(err, data) {
+                console.log("RESP", err, data);
+            });
+        }, 1000);
+
         table.setMonState("voltage", "on");
         table.setMonState("humidity", "off");
 
