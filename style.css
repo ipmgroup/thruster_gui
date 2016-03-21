@@ -1,0 +1,8 @@
+table { border-collapse: collapse; }
+tr:nth-child(odd) { background-color: #F0F0F0; }
+tr:nth-child(even) { background-color: #E0E0E0; }
+td { padding: 1pt 4pt; }
+td:not(:first-child) { border-left: 1px solid #C0C0C0; }
+
+.text-view { display: inline-block; width: 4em; text-align: center; }
+.mon-button { width: 3em; }

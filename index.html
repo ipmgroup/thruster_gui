@@ -1,44 +1,16 @@
 <!DOCTYPE html>
 <html></head>
-    <title>Node 1 control</title>
+    <title>Motor control</title>
     <style>
-        table { border-collapse: collapse; }
-        tr:first-child { text-align: center; }
-        td { padding: 1pt 4pt; }
         .mstate { display: inline-block; width: 1em; height: 1em; text-align: center; }
         .mstate.on  { color: green; }
         .mstate.off { color: red; }
-        tr:nth-child(odd) { background-color: #F0F0F0; }
-        tr:nth-child(even) { background-color: #E0E0E0; }
         .hidden { display: none; }
     </style>
+    <link rel="stylesheet" href="style.css"/>
     <script src="main.js"></script>
+    <script src="control-table.js"></script>
 </head><body>
-    <ul class="hidden">
-        <li num="1"><a href="#">1</a></li>
-        <li num="2"><a href="#">2</a></li>
-        <li num="3"><a href="#">3</a></li>
-        <li num="4"><a href="#">4</a></li>
-        <li num="5"><a href="#">5</a></li>
-    </ul>
-
-    <script>
-        (function() {
-            var el = document.getElementsByTagName("ul")[0];
-
-            el.addEventListener("click", function(event) {
-                var tgt = event.target;
-                if (tgt.tagName.toLowerCase() === "a") {
-                    console.log(tgt.parentNode.getAttribute("num"), tgt.tagName);
-                    el.classList.add("hidden");
-                    document.getElementById("controls").classList.remove("hidden");
-                }
-                event.preventDefault();
-            });
-        })();
-    </script>
-
-    <div id="controls">
     <fieldset class="params">
         <legend>Control Word</legend>
         <label><input type="checkbox" name="ctrl-a"/>Ololo</label>
@@ -49,36 +21,4 @@
         <input type="text" name="ctrl-word" value="0x0000"/>
         <input type="button" value="Apply"/><br/>
     </fieldset>
-
-    <table><tr>
-        <td>Name</td>
-        <td>Set</td>
-        <td>Target</td>
-        <td>Actual</td>
-        <td>Mon</td>
-    </tr><tr>
-        <td>Name</td>
-        <td><input type="text" value="" placeholder="Name"> <input type="button" value="Apply"/></td>
-        <td>125 dB</td>
-        <td>125 dB</td>
-        <td><input type="button" value="on"/> <span class="mstate on">&#x2713</span></td>
-    </tr><tr>
-        <td>Name</td>
-        <td><input type="text" value="" placeholder="Name"> <input type="button" value="Apply"/></td>
-        <td>125 dB</td>
-        <td>125 dB</td>
-        <td><input type="button" value="on"/> <span class="mstate off">&#x2717</span></td>
-    </tr><tr>
-        <td>Name</td>
-        <td><input type="text" value="" placeholder="Name"> <input type="button" value="Apply"/></td>
-        <td>125 dB</td>
-        <td>125 dB</td>
-        <td><input type="button" value="on"/><span class="mstate">?</span></td>
-    </tr><tr>
-        <td>Name</td>
-        <td colspan="2"></td>
-        <td>125 dB</td>
-        <td><input type="button" value="on"/><span class="mstate">?</span></td>
-    </tr></table>
-    </div>
 </body></html>
