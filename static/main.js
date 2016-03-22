@@ -51,7 +51,7 @@
         //table.setMonState("voltage", "off");
         //table.setMonState("humidity", "off");
         Object.keys(descr).forEach(function(key){
-            console.log("key", descr[key].name.toLowerCase());
+            //console.log("key", descr[key].name.toLowerCase());
             table.setMonState(descr[key].name.toLowerCase(), "off");
         });
 
