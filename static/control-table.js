@@ -33,7 +33,7 @@
                 tgt: null,
                 act: null,
                 monButton: null,
-                monButtonAction: "on",
+                monButtonAction: 1,
                 monStatus: null
             };
 
@@ -99,7 +99,7 @@
             }else if((idx = monButtons.indexOf(tgt)) >= 0){
                 param.type = "mon";
                 param.name = self._dnames[idx];
-                param.value = monButtons[idx].value;
+                param.value = self._lines[idx].monButtonAction;//monButtons[idx].value;
 
                 self.setMonState(param.name, "?");
             }else{
@@ -116,6 +116,10 @@
         if (idx >= 0) {
             var line = self._lines[idx];
             var button = line.monButton, text = line.monStatus;
+
+            if(button == null){
+                return;
+            }
 
             switch (state) {
             case "on":
@@ -136,6 +140,24 @@
                 text.textContent = "?";
                 break;
             }
+        }
+    };
+
+    ControlTable.prototype.setMonAction = function(name, newAction){
+        var self = this, idx = self._dnames.indexOf(name);
+
+        if(idx >= 0){
+            var line = self._lines[idx];
+            line.monButtonAction = newAction;
+        }
+    };
+
+    ControlTable.prototype.setActualValue = function(name, value){
+        var self = this, idx = self._dnames.indexOf(name);
+
+        if(idx >= 0){
+            var line = self._lines[idx];
+            line.act.textContent = value;
         }
     };
 
