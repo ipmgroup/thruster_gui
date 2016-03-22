@@ -37,7 +37,7 @@
     Comm.prototype._recv = function(data) {
         var self = this, i;
 
-        // console.log("COMM_RECV", data.type, data.data);
+        //console.log("COMM_RECV", data.type, data.data);
 
         if (data.id !== undefined &&
             (i = self._reqs.map(id).indexOf(data.id)) >= 0 &&

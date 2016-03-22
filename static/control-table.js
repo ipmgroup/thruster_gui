@@ -33,6 +33,7 @@
                 tgt: null,
                 act: null,
                 monButton: null,
+                monButtonAction: "on",
                 monStatus: null
             };
 
@@ -87,22 +88,23 @@
         var setButtons = self._lines.map(prop("setButton"));
         var monButtons = self._lines.map(prop("monButton"));
 
-        self.content.addEventListener("click", function(event) {
+        self.content.addEventListener("click", function(event){
             var tgt = event.target, idx = setButtons.indexOf(tgt);
             var param = { event: event };
 
-            if (idx >= 0) {
+            if(idx >= 0){
                 param.type = "set";
                 param.name = self._dnames[idx];
                 param.value = self._lines[idx].setValue.value;
-            } else if ((idx = monButtons.indexOf(tgt)) >= 0) {
+            }else if((idx = monButtons.indexOf(tgt)) >= 0){
                 param.type = "mon";
                 param.name = self._dnames[idx];
                 param.value = monButtons[idx].value;
 
                 self.setMonState(param.name, "?");
-            } else
+            }else{
                 return;
+            }
 
             handler(param);
         });
@@ -136,4 +138,15 @@
             }
         }
     };
+
+    ControlTable.prototype.setTarget = function(name, value) {
+        var self = this, idx = self._dnames.indexOf(name);
+
+        if (idx >= 0) {
+            var line = self._lines[idx];
+            var field = line.tgt;
+
+            field.textContent = value;
+        }
+    }
 })(document.createElement.bind(document));
