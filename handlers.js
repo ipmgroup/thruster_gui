@@ -4,20 +4,20 @@
 // and the actual command line arguments of the console application.
 var strAdapter = {
     // Path to the console application.
-    App:            "./mon.sh",
+    app:            "./mon.sh",
 
     // Options.
-    Monitoring:     "-m",
+    monitoring:     "-m",
 
-    // The following keys have to correspond with the names in the web app.
+    // The following keys have to correspond with the names in the web app, but be lower case.
     // The values have to correspond with the command line arguments of the console app.
-    Speed:          "speed",
-    Acceleration:   "acceleration",
-    Voltage:        "voltage",
-    Current:        "current",
-    Temperature:    "temperature",
-    Humidity:       "humidity",
-    Status:         "fault"
+    speed:          "speed",
+    accel       :   "acceleration",
+    voltage:        "voltage",
+    current:        "current",
+    temperature:    "temperature",
+    humidity:       "humidity",
+    status:         "fault"
 };
 
 var spawn = require("child_process").spawn;
@@ -26,7 +26,8 @@ module.exports = Server;
 
 function Server(notify) {
     this.notify = notify;
-    this.mon = {};
+    this.mon = {}; // List of parameters that are being monitored. Check this to prevent creating redundant monitors.
+    this.set = {}; // List of nodes that are already being written to. Check this to prevent redundant or colliding write attempts.
 }
 
 Server.prototype.handle = function(type, data, resp, notify) {
@@ -93,6 +94,52 @@ Server.prototype.handle = function(type, data, resp, notify) {
         resp(mon.content);
         break;
 
+    case "set":
+        console.log("Setting", data.name, data.value);
+        if(Object.keys(this.set).indexOf(-1) < 0){
+            this.set[-1] = new Setter(-1, data.name, this.notify);
+        }
+        var set = this.set[-1], prefix = "";
+
+        if(set.thread == null){
+            set.content.data = data.value;
+            set.apply();
+
+            set.thread.on("close", function(code){
+                if(prefix !== ""){
+                    set.content.data = prefix;
+                    notify("set", set.content); // send stored rests
+                }
+                set.abort();
+                set.content.data = code;
+                console.log("set_close", set.content);
+                notify("set_close", set.content);
+            });
+
+            set.thread.on("error", function(code){
+                set.abort();
+                set.content.data = code;
+                console.log("set_error", set.content);
+                notify("set_error", set.content);
+            });
+
+            set.thread.stdout.on("data", function(data){
+                var lines = data.toString("utf-8").split(/\r\n?|\n/);
+                lines[0] = [ prefix, lines[0] ].join("");
+                prefix = lines.pop();
+
+                lines.forEach(function(line) {
+                    set.content.data = line;//+line;
+                    //console.log("line", set.content.data);
+                    notify("set", set.content); // can be called multiple times
+                });
+            });
+        }else{
+            console.log("error", "busy", set.content.id, set.thread);
+        }
+
+        resp(set.content);
+        break;
     default:
         console.log("unsupported", type);
     }
@@ -106,8 +153,10 @@ function Monitor(id, name, notify){
 }
 
 Monitor.prototype.start = function(){
+    var self = this;
     if(this.content.status == 0){
-        this.thread = spawn(strAdapter.App, [ strAdapter.Monitoring, strAdapter[this.name] ]);
+        //console.log("shell_name", strAdapter[this.content.name.toLowerCase()]);
+        this.thread = spawn(strAdapter.app, [ strAdapter.monitoring, strAdapter[this.content.name.toLowerCase()] ]);
         this.content.status = 1;
     }
 }
@@ -118,5 +167,35 @@ Monitor.prototype.stop = function(){
         //console.log("stopping3");
         this.thread.kill();
         this.content.status = 0;
+    }
+}
+
+function Setter(id, name, notify){
+    this.notify = notify;
+    this.thread = null;
+    this.content = {/*type: "mon", */id: id, name: name, /*status: 0, */data: null};
+}
+
+Setter.prototype.apply = function(){
+    if(this.thread == null){
+        //console.log("applying", this.content);
+        this.thread = spawn(strAdapter.app, ["--" + strAdapter[this.content.name.toLowerCase()] + "=" + this.content.data]);
+    }else{
+        console.log("busy", this.content.id, this.thread);
+    }
+}
+
+Setter.prototype.get = function(){
+    if(this.thread == null){
+        this.thread = spawn(strAdapter.app, ["--" + strAdapter[this.content.name.toLowerCase()]]);
+    }else{
+        console.log("busy", this.content.id, this.thread);
+    }
+}
+
+Setter.prototype.abort = function(){
+    if(this.thread != null){
+        this.thread.kill();
+        this.thread = null;
     }
 }

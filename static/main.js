@@ -3,7 +3,7 @@
 
     var descr = {
         speed:          { name: "Speed",        set: true,  mon: true  },
-        accel:          { name: "Acceleration",        set: true,  mon: false },
+        accel:          { name: "Acceleration", set: true,  mon: false },
         voltage:        { name: "Voltage",      set: false, mon: true  },
         current:        { name: "Current",      set: false, mon: true  },
         temperature:    { name: "Temperature",  set: false, mon: true  },
@@ -16,13 +16,13 @@
         var table = new MotorControl.ControlTable(descr, onClick);
 
         function connected() {
-            comm.send("test", { ololo: 1 }, function(err, data) {
+            comm.send("test", { test: 1 }, function(err, data) {
                 console.log("RESP", err, data);
             });
 
-            comm.send("test", { ololo: 2 }, function(err, data) {
-                console.log("RESP", err, data);
-            });
+            //comm.send("test", { ololo: 2 }, function(err, data) {
+            //    console.log("RESP", err, data);
+            //});
         }
 
         function notify(type, data) {
@@ -38,9 +38,11 @@
 
         function onClick(param) {
             console.log("Clicked", param);
-
             if(param.type == "set"){
                 table.setTarget(param.name, param.value);
+                comm.send("set", {id: -1, name: param.name, value: param.value}, function(err, data){
+                    console.log("RESP", err, data);
+                });
             }else if(param.type == "mon"){
                 comm.send("mon", {id: -1, name: param.name, value: param.value}, function(err, data){
                     console.log("RESP", err, data);
