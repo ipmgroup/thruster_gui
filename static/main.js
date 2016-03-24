@@ -11,9 +11,28 @@
         status:         { name: "Status",       set: false, mon: true  }
     };
 
+    var flags = {
+        system: {name: "System",                   bitPos: 0},
+        motor:  {name: "Motor",                    bitPos: 1},
+        fw:     {name: "Field weakening",          bitPos: 2},
+        fa:     {name: "Force angle",              bitPos: 3},
+        rr:     {name: "Resistance recalculation", bitPos: 4},
+        pw:     {name: "Power wrap",               bitPos: 5}
+    }
+
     window.addEventListener("load", function() {
         var comm = new MotorControl.Comm(connected, notify);
+        var cwfield = new MotorControl.ControlwordField(flags, onClick);
         var table = new MotorControl.ControlTable(descr, onClick);
+
+        // (function() {
+        //     var fs = document.getElementsByTagName("fieldset")[0];
+        //     fs.addEventListener("click", function(event) {
+        //         var tgt = event.target;
+        //         if (tgt.type === "checkbox")
+        //             console.log(tgt.checked)
+        //     });
+        // })();
 
         function connected() {
             comm.send("test", { test: 1 }, function(err, data) {
@@ -50,6 +69,10 @@
             }
         }
 
+        function onChange(param){
+
+        }
+
         //table.setMonState("voltage", "off");
         //table.setMonState("humidity", "off");
         Object.keys(descr).forEach(function(key){
@@ -57,6 +80,7 @@
             table.setMonState(descr[key].name.toLowerCase(), "off");
         });
 
+        document.body.appendChild(cwfield.content);
         document.body.appendChild(table.content);
     });
 })();
