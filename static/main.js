@@ -25,15 +25,6 @@
         var cwfield = new MotorControl.ControlwordField(flags, onClick);
         var table = new MotorControl.ControlTable(descr, onClick);
 
-        // (function() {
-        //     var fs = document.getElementsByTagName("fieldset")[0];
-        //     fs.addEventListener("click", function(event) {
-        //         var tgt = event.target;
-        //         if (tgt.type === "checkbox")
-        //             console.log(tgt.checked)
-        //     });
-        // })();
-
         function connected() {
             comm.send("test", { test: 1 }, function(err, data) {
                 console.log("RESP", err, data);
@@ -69,9 +60,9 @@
             }
         }
 
-        function onChange(param){
-
-        }
+        // function onChange(param){
+        //
+        // }
 
         //table.setMonState("voltage", "off");
         //table.setMonState("humidity", "off");

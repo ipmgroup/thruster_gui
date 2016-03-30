@@ -90,35 +90,45 @@
         var field = self.content;
 
         field.addEventListener("change", function(event){
+            //var param = {event: event};
             var target = event.target;
             if(target.type == "checkbox"){
                 var pos = self._flags[target.name].bitPos;
-                console.log(target.name, target.checked + " (" + pos + ")");
+                //console.log(target.name, target.checked + " (" + pos + ")");
                 self._cw = ~(~(self._cw) | (1 << pos)) | (target.checked << pos);
                 self._input.value = "0x" + self._cw.toString(16);
             }else if(target.type == "text"){
-                console.log(target.name, target.value);
+                //console.log(target.name, target.value);
                 self.updateCheckboxes(target.value);
             }
+            //handler(param);
         });
 
         field.addEventListener("keypress", function(event){
+            var param = {event: event};
             var target = event.target;
             var key = event.which;
             if(key == 13 && target.type == "text"){
-                console.log(target.name, target.value);
+                param.type = "set";
+                param.name = "controlword";
+                param.value = parseInt(target.value).toString(16);
+                //console.log(target.name, target.value);
                 self.updateCheckboxes(target.value);
-                //TODO: Send data to server.
+                handler(param);
             }
         });
 
         field.addEventListener("click", function(event){
+            var param = {event: event};
             var target = event.target;
             if(target.type == "button"){
-                var value = self._input.value;
-                console.log(target.name, value);
+                var value = parseInt(self._input.value).toString(16);
+                param.type = "set";
+                param.name = "controlword";
+                param.value = value;
+                //console.log(target.name, value);
                 self.updateCheckboxes(value);
-                //TODO: Send data to server.
+                handler(param);
             }
         });
     }

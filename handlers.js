@@ -11,8 +11,9 @@ var strAdapter = {
 
     // The following keys have to correspond with the names in the web app, but be lower case.
     // The values have to correspond with the command line arguments of the console app.
+    controlword:    "quickstart",
     speed:          "speed",
-    accel       :   "acceleration",
+    accel:          "acceleration",
     voltage:        "voltage",
     current:        "current",
     temperature:    "temperature",
