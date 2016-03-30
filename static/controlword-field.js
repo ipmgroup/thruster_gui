@@ -17,6 +17,7 @@
         self._checkboxes = null;
         self._cblabels = null;
         self._input = null;
+        self._cw = 0;
         self._button = null;
 
         self._genField();
@@ -68,15 +69,53 @@
             self.content.appendChild(mk("br"));
         }
         var input = self._input = mkInput("text", "cwinput");
-        input.value = "0x0000";
+        input.value = "0x" + self._cw;
         self.content.appendChild(input);
         var button = self._button = mkInput("button", "cwbutton");
         button.value = "Apply";
         self.content.appendChild(button);
     }
 
+    ControlwordField.prototype.updateCheckboxes = function(value){
+        var self = this;
+        self._cw = parseInt(value);
+        self._checkboxes.forEach(function(cb){
+            var pos = self._flags[cb.name].bitPos;
+            cb.checked = self._cw & (1 << pos);
+        });
+    }
+
     ControlwordField.prototype._attachHandler = function(handler){
-        return;
+        var self = this;
+        var field = self.content;
+
+        field.addEventListener("change", function(event){
+            var target = event.target;
+            if(target.type == "checkbox"){
+                var pos = self._flags[target.name].bitPos;
+                console.log(target.name, target.checked + " (" + pos + ")");
+                self._cw = ~(~(self._cw) | (1 << pos)) | (target.checked << pos);
+                self._input.value = "0x" + self._cw;
+            }
+        });
+
+        field.addEventListener("keypress", function(event){
+            var target = event.target;
+            var key = event.which;
+            if(key == 13 && target.type == "text"){
+                console.log(target.name, target.value);
+                self.updateCheckboxes(target.value);
+            }
+        });
+
+        field.addEventListener("click", function(event){
+            var target = event.target;
+            if(target.type == "button"){
+                var value = self._input.value;
+                console.log(target.name, value);
+                self.updateCheckboxes(value);
+            }
+        });
     }
 
 })(document.createElement.bind(document));
