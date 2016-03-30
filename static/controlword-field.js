@@ -95,7 +95,10 @@
                 var pos = self._flags[target.name].bitPos;
                 console.log(target.name, target.checked + " (" + pos + ")");
                 self._cw = ~(~(self._cw) | (1 << pos)) | (target.checked << pos);
-                self._input.value = "0x" + self._cw;
+                self._input.value = "0x" + self._cw.toString(16);
+            }else if(target.type == "text"){
+                console.log(target.name, target.value);
+                self.updateCheckboxes(target.value);
             }
         });
 
@@ -105,6 +108,7 @@
             if(key == 13 && target.type == "text"){
                 console.log(target.name, target.value);
                 self.updateCheckboxes(target.value);
+                //TODO: Send data to server.
             }
         });
 
@@ -114,6 +118,7 @@
                 var value = self._input.value;
                 console.log(target.name, value);
                 self.updateCheckboxes(value);
+                //TODO: Send data to server.
             }
         });
     }
