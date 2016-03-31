@@ -68,7 +68,7 @@
         //table.setMonState("humidity", "off");
         Object.keys(descr).forEach(function(key){
             //console.log("key", descr[key].name.toLowerCase());
-            table.setMonState(descr[key].name.toLowerCase(), "off");
+            table.setMonState(key/*descr[key].name.toLowerCase()*/, "off");
         });
 
         document.body.appendChild(cwfield.content);

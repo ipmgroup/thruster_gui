@@ -109,11 +109,12 @@
             var target = event.target;
             var key = event.which;
             if(key == 13 && target.type == "text"){
+                var value = parseInt(target.value);
                 param.type = "set";
                 param.name = "controlword";
-                param.value = parseInt(target.value).toString(16);
+                param.value = value.toString(16);
                 //console.log(target.name, target.value);
-                self.updateCheckboxes(target.value);
+                self.updateCheckboxes(value);
                 handler(param);
             }
         });
@@ -122,10 +123,10 @@
             var param = {event: event};
             var target = event.target;
             if(target.type == "button"){
-                var value = parseInt(self._input.value).toString(16);
+                var value = parseInt(self._input.value);
                 param.type = "set";
                 param.name = "controlword";
-                param.value = value;
+                param.value = value.toString(16);
                 //console.log(target.name, value);
                 self.updateCheckboxes(value);
                 handler(param);

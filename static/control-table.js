@@ -14,6 +14,7 @@
 
     function ControlTable(descr, handler) {
         var self = this, table = self.content = mk("table");
+        //table.width = "100%";
 
         self._descr = descr;
         self._dnames = Object.keys(descr);

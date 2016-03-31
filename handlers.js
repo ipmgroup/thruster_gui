@@ -5,6 +5,7 @@
 var strAdapter = {
     // Path to the console application.
     app:            "./mon.sh",
+    //app:            "./tctl",
 
     // Options.
     monitoring:     "-m",
@@ -34,10 +35,10 @@ function Server(notify) {
 Server.prototype.handle = function(type, data, resp, notify) {
     switch (type) {
     case "test":
-        setTimeout(function() {
+        //setTimeout(function() {
             data.foo = "bar";
             resp(data); // can be called only once
-        }, 1000);
+        //}, 1000);
         break;
 
     case "mon":
@@ -49,7 +50,7 @@ Server.prototype.handle = function(type, data, resp, notify) {
         var mon = this.mon[data.name], prefix = "";
         //var retData = {id: mon.id, name: mon.name, state: mon.isOn, data: "--"};
 
-        if(mon.content.status == 0 && data.value == 1){
+        if((mon.content.status == 0 || mon.content.status == "0") && data.value == 1){
             mon.start();
 
             mon.thread.on("close", function(code){
@@ -81,7 +82,7 @@ Server.prototype.handle = function(type, data, resp, notify) {
                     notify("mon", mon.content); // can be called multiple times
                 });
             });
-        }else if(mon.content.status == 1 && data.value == 0){
+        }else if((mon.content.status == 1 || mon.content.status == "1") && data.value == 0){
             //console.log("stopping1");
             mon.stop();
             mon.content.data = "--";
@@ -155,8 +156,8 @@ function Monitor(id, name, notify){
 
 Monitor.prototype.start = function(){
     var self = this;
-    if(this.content.status == 0){
-        //console.log("shell_name", strAdapter[this.content.name.toLowerCase()]);
+    if(this.content.status == 0 || this.content.status == "0"){
+        console.log("shell_name", strAdapter[this.content.name.toLowerCase()]);
         this.thread = spawn(strAdapter.app, [ strAdapter.monitoring, strAdapter[this.content.name.toLowerCase()] ]);
         this.content.status = 1;
     }
@@ -164,7 +165,7 @@ Monitor.prototype.start = function(){
 
 Monitor.prototype.stop = function(){
     //console.log("stopping2", this.content, this.thread);
-    if(this.content.status == 1){
+    if(this.content.status == 1 || this.content.status == "1"){
         //console.log("stopping3");
         this.thread.kill();
         this.content.status = 0;
