@@ -62,9 +62,9 @@
             if(target.type == "button"){
                 if(target.name == "nsbutton"){
                     var value = parseInt(self._input.value);
-                    self.nodeid = value;
+                    self.nodeid = value.toString(16);
                     param.type = "setid";
-                    param.id = value.toString(16);
+                    param.id = self.nodeid;
                     //console.log("nsbutton");
                 }else if(target.name == "dhb"){
                     param.type = "disable_hidden";

@@ -107,6 +107,7 @@ Server.prototype.handle = function(type, data, resp, notify) {
 
         if(set.thread == null){
             set.content.data = data.value;
+            set.content.name = data.name;
             set.apply();
 
             set.thread.on("close", function(code){
