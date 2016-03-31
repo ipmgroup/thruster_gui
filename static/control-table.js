@@ -39,12 +39,13 @@
             };
 
             var cols = {};
-            [ "name", "set", "tgt", "act", "mon" ].forEach(function(name) {
+            [ "name", /*"unit", */"set", "tgt", "act", "mon" ].forEach(function(name) {
                 var el = cols[name] = mk("td");
                 rs.el.appendChild(el);
             });
 
-            cols.name.textContent = conf.name;
+            cols.name.textContent = conf.name + ((conf.unit != "")?(" (" + conf.unit + ")"):"");
+            //cols.unit.textContent = conf.unit;
 
             if (conf.set) {
                 cols.set.appendChild(rs.setValue = mkInput("text", ""));
@@ -74,7 +75,7 @@
         });
 
         var header = mk("tr");
-        [ "Name", "Setter", "Target", "Actual", "Monitor" ].forEach(function(name) {
+        [ "Name", /*"Unit", */"Setter", "Target", "Actual", "Monitor" ].forEach(function(name) {
             var el = mk("th");
             el.textContent = name;
             header.appendChild(el);

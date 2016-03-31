@@ -2,13 +2,13 @@
     "use strict";
 
     var descr = {
-        speed:          { name: "Speed",        set: true,  mon: true  },
-        accel:          { name: "Acceleration", set: true,  mon: false },
-        voltage:        { name: "Voltage",      set: false, mon: true  },
-        current:        { name: "Current",      set: false, mon: true  },
-        temperature:    { name: "Temperature",  set: false, mon: true  },
-        humidity:       { name: "Humidity",     set: false, mon: true  },
-        status:         { name: "Status",       set: false, mon: true  }
+        speed:          { name: "Speed",        unit: "rpm",   set: true,  mon: true  },
+        accel:          { name: "Acceleration", unit: "rpm/s", set: true,  mon: false },
+        voltage:        { name: "Voltage",      unit: "0.1 V", set: false, mon: true  },
+        current:        { name: "Current",      unit: "mA",    set: false, mon: true  },
+        temperature:    { name: "Temperature",  unit: "°C",    set: false, mon: true  },
+        humidity:       { name: "Humidity",     unit: "%",     set: false, mon: true  },
+        status:         { name: "Status",       unit: "",      set: false, mon: true  }
     };
 
     var flags = {
