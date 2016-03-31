@@ -87,6 +87,7 @@
 
     ControlTable.prototype._attachHandler = function(handler) {
         var self = this;
+        var setValues = self._lines.map(prop("setValue"));
         var setButtons = self._lines.map(prop("setButton"));
         var monButtons = self._lines.map(prop("monButton"));
 
@@ -109,6 +110,20 @@
             }
 
             handler(param);
+        });
+
+        self.content.addEventListener("keypress", function(event){
+            var param = {event: event};
+            var target = event.target;
+            var key = event.which;
+            var index = setValues.indexOf(target);
+            if(key == 13 && target.type == "text"){
+                var value = parseInt(target.value);
+                param.type = "set";
+                param.name = self._dnames[index];
+                param.value = value.toString(10);
+                handler(param);
+            }
         });
     };
 
