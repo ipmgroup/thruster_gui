@@ -97,10 +97,12 @@
 
             if(idx >= 0){
                 param.type = "set";
+                //param.id = nodeid;
                 param.name = self._dnames[idx];
                 param.value = self._lines[idx].setValue.value;
             }else if((idx = monButtons.indexOf(tgt)) >= 0){
                 param.type = "mon";
+                //param.id = nodeid;
                 param.name = self._dnames[idx];
                 param.value = self._lines[idx].monButtonAction;//monButtons[idx].value;
 
@@ -120,6 +122,7 @@
             if(key == 13 && target.type == "text"){
                 var value = parseInt(target.value);
                 param.type = "set";
+                //param.id = nodeid;
                 param.name = self._dnames[index];
                 param.value = value.toString(10);
                 handler(param);
@@ -188,4 +191,41 @@
             field.textContent = value;
         }
     }
+
+    ControlTable.prototype.resetActual = function(name){
+        var self = this;
+        var index = self._dnames.indexOf(name);
+
+        if(index >= 0){
+            var line = self._lines[index];
+            var cell = line.act;
+            if(cell != null && cell.textContent != ""){
+                cell.textContent = "--";
+            }
+        }
+    }
+
+    ControlTable.prototype.resetTarget = function(name){
+        var self = this;
+        var index = self._dnames.indexOf(name);
+
+        if(index >= 0){
+            var line = self._lines[index];
+            var cell = line.tgt;
+            if(cell != null && cell.textContent != ""){
+                cell.textContent = "--";
+            }
+        }
+    }
+
+    ControlTable.prototype.resetTable = function(){
+        var self = this;
+        self._dnames.forEach(function(name){
+            self.resetActual(name);
+            self.resetTarget(name);
+            self.setMonState(name, "off");
+            self.setMonAction(name, 1);
+        });
+    }
+
 })(document.createElement.bind(document));

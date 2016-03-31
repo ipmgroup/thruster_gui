@@ -111,6 +111,7 @@
             if(key == 13 && target.type == "text"){
                 var value = parseInt(target.value);
                 param.type = "set";
+                //param.id = nodeid;
                 param.name = "controlword";
                 param.value = value.toString(16);
                 //console.log(target.name, target.value);
@@ -125,6 +126,7 @@
             if(target.type == "button"){
                 var value = parseInt(self._input.value);
                 param.type = "set";
+                //param.id = nodeid;
                 param.name = "controlword";
                 param.value = value.toString(16);
                 //console.log(target.name, value);

@@ -4,7 +4,7 @@
 #echo $2
 #echo $3
 
-if test "${1#*-m}" != "$1"; then
+if test "${2#*-m}" != "$2"; then
 	NUM=1
 	while true; do
 		echo $NUM
@@ -12,5 +12,5 @@ if test "${1#*-m}" != "$1"; then
 		sleep 0.25
 	done
 else
-	echo $1 | sed 's/.*\=//'
+	echo $2 | sed 's/.*\=//'
 fi

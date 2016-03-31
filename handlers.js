@@ -9,6 +9,7 @@ var strAdapter = {
 
     // Options.
     monitoring:     "-m",
+    nodeid:         "--nodeid=",
 
     // The following keys have to correspond with the names in the web app, but be lower case.
     // The values have to correspond with the command line arguments of the console app.
@@ -33,6 +34,7 @@ function Server(notify) {
 }
 
 Server.prototype.handle = function(type, data, resp, notify) {
+    var self = this;
     switch (type) {
     case "test":
         //setTimeout(function() {
@@ -43,11 +45,11 @@ Server.prototype.handle = function(type, data, resp, notify) {
 
     case "mon":
         console.log("Monitoring", data.name, data.value);
-        if (Object.keys(this.mon).indexOf(data.name) < 0){
-            this.mon[data.name] = new Monitor(-1, data.name, this.notify);
+        if (Object.keys(this.mon).indexOf(data.id + data.name) < 0){
+            this.mon[data.id + data.name] = new Monitor(data.id, data.name, this.notify);
         }
 
-        var mon = this.mon[data.name], prefix = "";
+        var mon = this.mon[data.id + data.name], prefix = "";
         //var retData = {id: mon.id, name: mon.name, state: mon.isOn, data: "--"};
 
         if((mon.content.status == 0 || mon.content.status == "0") && data.value == 1){
@@ -97,11 +99,11 @@ Server.prototype.handle = function(type, data, resp, notify) {
         break;
 
     case "set":
-        console.log("Setting", data.name, data.value);
-        if(Object.keys(this.set).indexOf(-1) < 0){
-            this.set[-1] = new Setter(-1, data.name, this.notify);
+        console.log("Setting", data.id, data.name, data.value);
+        if(Object.keys(this.set).indexOf(data.id) < 0){
+            this.set[data.id] = new Setter(data.id, data.name, this.notify);
         }
-        var set = this.set[-1], prefix = "";
+        var set = this.set[data.id], prefix = "";
 
         if(set.thread == null){
             set.content.data = data.value;
@@ -142,6 +144,19 @@ Server.prototype.handle = function(type, data, resp, notify) {
 
         resp(set.content);
         break;
+    case "setid": //Not necessary since the id is sent with every request.
+        break;
+    case "disable_hidden":
+        var m = self.mon;
+        for(var index in m){
+            if(m.hasOwnProperty(index) && m[index].content.id != data.id){
+                m[index].stop();
+                console.log("deleting", index);
+                delete self.mon[index]; // Free up memory.
+            }
+        }
+
+        break;
     default:
         console.log("unsupported", type);
     }
@@ -158,7 +173,7 @@ Monitor.prototype.start = function(){
     var self = this;
     if(this.content.status == 0 || this.content.status == "0"){
         console.log("shell_name", strAdapter[this.content.name.toLowerCase()]);
-        this.thread = spawn(strAdapter.app, [ strAdapter.monitoring, strAdapter[this.content.name.toLowerCase()] ]);
+        this.thread = spawn(strAdapter.app, [ strAdapter.nodeid + this.content.id, strAdapter.monitoring, strAdapter[this.content.name.toLowerCase()] ]);
         this.content.status = 1;
     }
 }
@@ -181,7 +196,7 @@ function Setter(id, name, notify){
 Setter.prototype.apply = function(){
     if(this.thread == null){
         //console.log("applying", this.content);
-        this.thread = spawn(strAdapter.app, ["--" + strAdapter[this.content.name.toLowerCase()] + "=" + this.content.data]);
+        this.thread = spawn(strAdapter.app, [strAdapter.nodeid + this.content.id, "--" + strAdapter[this.content.name.toLowerCase()] + "=" + this.content.data]);
     }else{
         console.log("busy", this.content.id, this.thread);
     }
@@ -189,7 +204,7 @@ Setter.prototype.apply = function(){
 
 Setter.prototype.get = function(){
     if(this.thread == null){
-        this.thread = spawn(strAdapter.app, ["--" + strAdapter[this.content.name.toLowerCase()]]);
+        this.thread = spawn(strAdapter.app, [strAdapter.nodeid + this.content.id, "--" + strAdapter[this.content.name.toLowerCase()]]);
     }else{
         console.log("busy", this.content.id, this.thread);
     }

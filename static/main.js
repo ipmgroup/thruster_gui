@@ -20,8 +20,11 @@
         pw:     {name: "Power wrap",               bitPos: 5}
     }
 
+    var nodeid = "6";
+
     window.addEventListener("load", function() {
         var comm = new MotorControl.Comm(connected, notify);
+        var nsfield = new MotorControl.NodeselectField(onNodeselect, nodeid);
         var cwfield = new MotorControl.ControlwordField(flags, onClick);
         var table = new MotorControl.ControlTable(descr, onClick);
 
@@ -38,7 +41,7 @@
         function notify(type, data) {
             console.log("NOTIFY", type, data);
 
-            if(type == "mon"){
+            if(type == "mon" && data.id == nodeid){
                 var strStat = (data.status == 1?"on":"off");
                 table.setMonAction(data.name, (data.status == 1?0:1));
                 table.setMonState(data.name, strStat);
@@ -50,19 +53,30 @@
             console.log("Clicked", param);
             if(param.type == "set"){
                 table.setTarget(param.name, param.value);
-                comm.send("set", {id: -1, name: param.name, value: param.value}, function(err, data){
+                comm.send("set", {id: nodeid, name: param.name, value: param.value}, function(err, data){
                     console.log("RESP", err, data);
                 });
             }else if(param.type == "mon"){
-                comm.send("mon", {id: -1, name: param.name, value: param.value}, function(err, data){
+                comm.send("mon", {id: nodeid, name: param.name, value: param.value}, function(err, data){
                     console.log("RESP", err, data);
                 });
             }
         }
 
-        // function onChange(param){
-        //
-        // }
+        function onNodeselect(param){
+            console.log("NodeSelect", param);
+            if(param.type == "setid"){
+                nodeid = param.id;
+                table.resetTable();
+                comm.send("setid", {id: param.id}, function(err, data){
+                    console.log("RESP", err, data);
+                });
+            }else if(param.type == "disable_hidden"){
+                comm.send("disable_hidden", {id: param.id}, function(err, data){
+                    console.log("RESP", err, data);
+                });
+            }
+        }
 
         //table.setMonState("voltage", "off");
         //table.setMonState("humidity", "off");
@@ -71,6 +85,7 @@
             table.setMonState(key/*descr[key].name.toLowerCase()*/, "off");
         });
 
+        document.body.appendChild(nsfield.content);
         document.body.appendChild(cwfield.content);
         document.body.appendChild(table.content);
     });
