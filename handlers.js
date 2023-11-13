@@ -4,8 +4,8 @@
 // and the actual command line arguments of the console application.
 var strAdapter = {
     // Path to the console application.
-    app:            "./mon.sh",
-    //app:            "./tctl",
+    //app:            "./mon.sh",
+    app:            "./tctl",
 
     // Options.
     monitoring:     "-m",
@@ -13,6 +13,8 @@ var strAdapter = {
 
     // The following keys have to correspond with the names in the web app, but be lower case.
     // The values have to correspond with the command line arguments of the console app.
+    active_profile: "active_profile",
+    statusword:     "statusword",
     controlword:    "quickstart",
     speed:          "speed",
     accel:          "acceleration",
@@ -173,8 +175,8 @@ function Monitor(id, name, notify){
 Monitor.prototype.start = function(){
     var self = this;
     if(this.content.status == 0 || this.content.status == "0"){
-        console.log("shell_name", strAdapter[this.content.name.toLowerCase()]);
-        this.thread = spawn(strAdapter.app, [ strAdapter.nodeid + this.content.id, strAdapter.monitoring, strAdapter[this.content.name.toLowerCase()] ]);
+        console.log("shell_name", strAdapter[this.content.name.toLowerCase().split(" ").join("")]);
+        this.thread = spawn(strAdapter.app, [ strAdapter.nodeid + this.content.id, strAdapter.monitoring, strAdapter[this.content.name.toLowerCase().split(" ").join("")] ]);
         this.content.status = 1;
     }
 }
@@ -197,7 +199,7 @@ function Setter(id, name, notify){
 Setter.prototype.apply = function(){
     if(this.thread == null){
         //console.log("applying", this.content);
-        this.thread = spawn(strAdapter.app, [strAdapter.nodeid + this.content.id, "--" + strAdapter[this.content.name.toLowerCase()] + "=" + this.content.data]);
+        this.thread = spawn(strAdapter.app, [strAdapter.nodeid + this.content.id, "--" + strAdapter[this.content.name.toLowerCase().split(" ").join("")] + "=" + this.content.data]);
     }else{
         console.log("busy", this.content.id, this.thread);
     }
@@ -205,7 +207,7 @@ Setter.prototype.apply = function(){
 
 Setter.prototype.get = function(){
     if(this.thread == null){
-        this.thread = spawn(strAdapter.app, [strAdapter.nodeid + this.content.id, "--" + strAdapter[this.content.name.toLowerCase()]]);
+        this.thread = spawn(strAdapter.app, [strAdapter.nodeid + this.content.id, "--" + strAdapter[this.content.name.toLowerCase().split(" ").join("")]]);
     }else{
         console.log("busy", this.content.id, this.thread);
     }

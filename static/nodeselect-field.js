@@ -74,8 +74,20 @@
 
                 handler(param);
             }
+        });
 
-
+        field.addEventListener("keypress", function(event){
+            var param = {event: event};
+            var target = event.target;
+            var key = event.which;
+            if(target.type == "text" && key == 13){
+                var value = parseInt(self._input.value);
+                self.nodeid = value.toString(16);
+                param.type = "setid";
+                param.id = self.nodeid;
+                //console.log("nsbutton");
+                handler(param);
+            }
         });
 
     }

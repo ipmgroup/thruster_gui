@@ -13,7 +13,9 @@
     }
 
     function ControlTable(descr, handler) {
-        var self = this, table = self.content = mk("table");
+        var self = this;
+
+        self.content = mk("fieldset");
         //table.width = "100%";
 
         self._descr = descr;
@@ -24,7 +26,7 @@
     }
 
     ControlTable.prototype._genLines = function() {
-        var self = this, table = self.content;
+        var self = this, table = mk("table"), fs = self.content;
 
         var lines = self._lines = self._dnames.map(function(dname) {
             var conf = self._descr[dname], rs = {
@@ -62,8 +64,8 @@
                 rs.act.classList.add("text-view");
                 rs.act.textContent = "--";
 
-                cols.mon.appendChild(rs.monButton = mkInput("button", "..."));
                 cols.mon.appendChild(rs.monStatus = mk("span"));
+                cols.mon.appendChild(rs.monButton = mkInput("button", "..."));
 
                 rs.monButton.disabled = true;
                 rs.monButton.classList.add("mon-button");
@@ -75,14 +77,19 @@
         });
 
         var header = mk("tr");
-        [ "Name", /*"Unit", */"Setter", "Target", "Actual", "Monitor" ].forEach(function(name) {
+        [ "Name", /*"Unit", */"Set", "Target", "Actual", "Monitor" ].forEach(function(name) {
             var el = mk("th");
             el.textContent = name;
             header.appendChild(el);
         });
 
         table.appendChild(header);
-        lines.forEach(function(line) { table.appendChild(line.el); })
+        lines.forEach(function(line) { table.appendChild(line.el); });
+
+        var legend = mk("legend");
+        legend.textContent = "Monitoring and Movement Control";
+        fs.appendChild(legend);
+        fs.appendChild(table);
     };
 
     ControlTable.prototype._attachHandler = function(handler) {
@@ -145,19 +152,22 @@
             case "on":
                 button.value = "off";
                 button.disabled = false;
-                text.textContent = "enabled";
+                text.textContent = String.fromCharCode(10004) + " ";
+                text.className = "monenabled";
                 break;
 
             case "off":
                 button.value = "on";
                 button.disabled = false;
-                text.textContent = "disabled";
+                text.textContent = String.fromCharCode(10008) + " ";
+                text.className = "mondisabled";
                 break;
 
             case "?":
                 button.value = "...";
                 button.disabled = true;
-                text.textContent = "?";
+                text.textContent = "? ";
+                text.className = "monunknown";
                 break;
             }
         }
